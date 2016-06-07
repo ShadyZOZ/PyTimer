@@ -1,11 +1,14 @@
 from tkinter import *
 import time
-
+import winsound
+import os
 
 class StopWatch(Frame):
     '''实现一个秒表部件'''
     msec = 100
     countdown = 15 * 60
+    soundfile1 = os.path.join(os.getcwd(), 'Windows Exclamation.wav')
+    soundfile2 = os.path.join(os.getcwd(), 'Windows Ringin.wav')
     def __init__(self, parent=None, **kw):
         Frame.__init__(self, parent, kw)
         self._start = 0.0
@@ -23,6 +26,7 @@ class StopWatch(Frame):
         self._setTime(self._elapsedtime)
         self._timer = self.after(self.msec, self._update)
         if self.countdown - self._elapsedtime < 0.01:
+            self.PlaySound2()
             self.after_cancel(self._timer)
             self._running = False
     def _setTime(self, elap):
@@ -32,9 +36,9 @@ class StopWatch(Frame):
         seconds = int(elap-minutes*60.0)
         # hseconds = int((elap - minutes*60.0 - seconds) *100)
         if minutes == 5 and seconds == 0:
-            print('play sound')
+            self.PlaySound1()
         if minutes == 1 and seconds == 0:
-            print('play sound')
+            self.PlaySound1()
         if len(str(minutes)) == 1:
             minutes = '0' + str(minutes)
         if len(str(seconds)) == 1:
@@ -60,6 +64,10 @@ class StopWatch(Frame):
         self._start = time.time()
         self._elapsedtime = 0.0
         self._setTime(self._elapsedtime)
+    def PlaySound1(self):
+        winsound.PlaySound(self.soundfile1,winsound.SND_ASYNC)
+    def PlaySound2(self):
+        winsound.PlaySound(self.soundfile2,winsound.SND_ASYNC)
         
         
 if __name__ == '__main__':
@@ -84,6 +92,8 @@ if __name__ == '__main__':
         Button(root, text = 'start', font='Helvetica -22', fg="green", command = sw.Start).grid(row=1, column=1, sticky=W+E+N+S)
         Button(root, text = 'pause', font='Helvetica -22', fg="red", command = sw.Stop).grid(row=1, column=3, sticky=W+E+N+S)
         Button(root, text = 'reset', font='Helvetica -22', fg="blue", command = sw.Reset).grid(row=1, column=5, sticky=W+E+N+S)
+        Button(root, text = '声音测试1', font='Helvetica -22', command = sw.PlaySound1).grid(row=2, column=2)
+        Button(root, text = '声音测试2', font='Helvetica -22', command = sw.PlaySound2).grid(row=2, column=4)
         # Button(root, text = 'quit', command = root.quit).grid(row=1, column=3, sticky=W+E+N+S)
         root.mainloop()
     main()
